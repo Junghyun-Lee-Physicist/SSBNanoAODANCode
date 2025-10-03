@@ -193,7 +193,8 @@ SSBCorrections::SSBCorrections(TextReader* reader, const std::string inputfileNa
 
     std::string btag_sf_json = "BTV/" + year_ + "_UL/btagging.json.gz";
     std::string btag_tagger = (btag_algo == "DeepJet") ? "deepJet_comb" : "deepCSV_comb";
-    std::string btag_eff_path = "CorrectionFiles/BTag/UL" + year_ + "/btagEff_" + btag_algo + ".root";
+    //std::string btag_eff_path = "CorrectionFiles/BTag/UL" + year_ + "/btagEff_" + btag_algo + ".root";
+    std::string btag_eff_path = "CorrectionFiles/BTag/UL" + RunPeriod + "/btagEff_" + btag_algo + ".root";
     std::cout << "btag_eff_path : " << btag_eff_path << std::endl;
 
     InitBtagSFCorrection(jsonDir + btag_sf_json, btag_tagger);

@@ -30,6 +30,10 @@
 // Textreader
 #include "./../TextReader/TextReader.hpp"
 
+// JSON Config Reader
+#include "./../jsonconfig/JsonConfigReader.hpp"
+#include "./../jsonconfig/XSecJsonLoader.hpp"
+
 // CPVObservables Calculator 
 #include "./../interface/SSBCPVCalc.h"
 
@@ -37,7 +41,7 @@
 class Analysis {
 public:
     // Constructor and destructor
-Analysis(TChain *chain, std::string inputName, std::string seDirName, std::string outputName, const std::string &branchListFile, const std::string &configFile, int NumEvt);
+Analysis(TChain *chain, std::string inputName, std::string seDirName, std::string outputName, const std::string &branchListFile, const std::string &configFile, int NumEvt, const std::string &jsonConfigFile = "", const std::string &jsonXSecFile = "");
 
     //~Analysis() = default;
     ~Analysis();
@@ -64,6 +68,12 @@ private:
     bool isData;
     //TextReader from Jaehoon.
     TextReader *SSBConfReader;
+    // JSON Config Reader (new)
+    JsonConfigReader *SSBJsonConfReader;
+    XSecJsonLoader *SSBJsonXSecLoader;
+    bool useJsonConfig_;
+    bool useJsonXSec_;
+
     SSBCorrections *SSBCorr;
     SSBCPVCalc *SSBCPVCal;
     int NumEvt; //

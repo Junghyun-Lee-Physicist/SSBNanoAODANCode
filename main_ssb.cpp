@@ -82,7 +82,18 @@ int main(int argc, char **argv)
     char *brachList = argv[7];
     printf("Brach List File = %s\n", brachList);
 
-    
+    // Optional: JSON config and XSec files (argv[8], argv[9])
+    std::string jsonConfigFile = "";
+    std::string jsonXSecFile = "";
+    if (argc > 8) {
+        jsonConfigFile = argv[8];
+        printf("JSON Config File = %s\n", argv[8]);
+    }
+    if (argc > 9) {
+        jsonXSecFile = argv[9];
+        printf("JSON XSec File = %s\n", argv[9]);
+    }
+
     //merge files
     FILE *filelist;
     char filename[1000];
@@ -129,7 +140,7 @@ int main(int argc, char **argv)
     cout << "Total number of events after merging root files: " << ch->GetEntries() << endl;
 
     // 
-    Analysis analysis(ch, filelistName, sedirname, outname, Form("./branchlist/%s", brachList), confname, maxEvt);
+    Analysis analysis(ch, filelistName, sedirname, outname, Form("./branchlist/%s", brachList), confname, maxEvt, jsonConfigFile, jsonXSecFile);
 
     analysis.SetVariables();
     // Execute Loop function //

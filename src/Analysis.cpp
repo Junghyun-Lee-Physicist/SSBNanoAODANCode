@@ -5,8 +5,9 @@
 #include <stdexcept>
 
 // Constructor: initialize TTreeReader with TChain and branch list file
-Analysis::Analysis(TChain *inputChain, std::string inputName, std::string seDirName, std::string outputName, const std::string &branchListFile, const std::string &configFile, int NumEvt= -1)
-    : chain(inputChain), fReader(inputChain), NumEvt(NumEvt), outdir(seDirName), outfile(outputName){
+Analysis::Analysis(TChain *inputChain, std::string inputName, std::string seDirName, std::string outputName, const std::string &branchListFile, const std::string &configFile, int NumEvt= -1, const std::string &jsonConfigFile, const std::string &jsonXSecFile)
+    : chain(inputChain), fReader(inputChain), NumEvt(NumEvt), outdir(seDirName), outfile(outputName),
+      SSBJsonConfReader(nullptr), SSBJsonXSecLoader(nullptr), useJsonConfig_(false), useJsonXSec_(false) {
     if (!chain) {
         throw std::runtime_error("Error: Invalid TChain pointer!");
     }
@@ -14,7 +15,7 @@ Analysis::Analysis(TChain *inputChain, std::string inputName, std::string seDirN
     isData = TString(FileName_).Contains("Data");
     std::cout << "FileName_ : " << FileName_ << std::endl;
     // Load Configuration files //
-    std::cout << "configFile : " << configFile << std::endl;  
+    std::cout << "configFile : " << configFile << std::endl;
     std::string confDir = "./configs/";
     std::string confpath = "";
     confpath = confDir+configFile;
@@ -22,6 +23,27 @@ Analysis::Analysis(TChain *inputChain, std::string inputName, std::string seDirN
     SSBConfReader->ReadFile(confpath);
     SSBConfReader->ReadVariables();
     SSBConfReader->PrintoutVariables();
+
+    // Load JSON Configuration (if provided) - runs alongside TextReader
+    if (!jsonConfigFile.empty()) {
+        std::string jsonConfPath = confDir + jsonConfigFile;
+        SSBJsonConfReader = new JsonConfigReader();
+        SSBJsonConfReader->ReadFile(jsonConfPath);
+        SSBJsonConfReader->PrintoutVariables();
+        useJsonConfig_ = true;
+        std::cout << "[JSON Config] Loaded alongside TextReader for comparison." << std::endl;
+    }
+
+    // Load JSON XSec file (if provided) - will be used in MCSF()
+    if (!jsonXSecFile.empty()) {
+        SSBJsonXSecLoader = new XSecJsonLoader();
+        if (SSBJsonXSecLoader->LoadFile(jsonXSecFile)) {
+            SSBJsonXSecLoader->PrintoutSamples();
+            useJsonXSec_ = true;
+            std::cout << "[JSON XSec] Loaded alongside text XSec for comparison." << std::endl;
+        }
+    }
+
     SSBCorr = new SSBCorrections(SSBConfReader, FileName_.Data());
     SSBCPVCal = new SSBCPVCalc();
     // Initialize branches based on branch list file
@@ -58,6 +80,18 @@ Analysis::~Analysis() {
         delete SSBConfReader;
         SSBConfReader = nullptr;
         std::cout << "SSBConfReader successfully deleted." << std::endl;
+    }
+
+    // Safely delete the JSON config objects
+    if (SSBJsonConfReader) {
+        delete SSBJsonConfReader;
+        SSBJsonConfReader = nullptr;
+        std::cout << "SSBJsonConfReader successfully deleted." << std::endl;
+    }
+    if (SSBJsonXSecLoader) {
+        delete SSBJsonXSecLoader;
+        SSBJsonXSecLoader = nullptr;
+        std::cout << "SSBJsonXSecLoader successfully deleted." << std::endl;
     }
 
     // Safely delete the TextReader object
@@ -1176,6 +1210,30 @@ void Analysis::MCSF()
         mc_sf_ =1.;
         std::cout << "Key " << FileName_.Data() << " not found in the std::map. mc sf is 1" << mc_sf_ << std::endl;
     }
+
+    // === JSON XSec comparison printout (beta) ===
+    if (useJsonXSec_ && SSBJsonXSecLoader) {
+        std::cout << std::endl;
+        std::cout << "========================================" << std::endl;
+        std::cout << " [Beta] JSON XSec Comparison" << std::endl;
+        std::cout << "========================================" << std::endl;
+        std::string sn = FileName_.Data();
+        if (SSBJsonXSecLoader->HasSample(sn)) {
+            const auto& js = SSBJsonXSecLoader->GetSample(sn);
+            double json_mc_sf = (js.cross_section_pb * js.branching_fraction * lumi) / js.effective_events;
+            std::cout << "  Sample: " << sn << std::endl;
+            std::cout << "  [Text] xsec=" << m_sam_xsec[sn] << "  br=" << m_sam_br[sn]
+                      << "  eff_evt=" << m_sam_posi_nega[sn] << "  mc_sf=" << mc_sf_ << std::endl;
+            std::cout << "  [JSON] xsec=" << js.cross_section_pb << "  br=" << js.branching_fraction
+                      << "  eff_evt=" << js.effective_events << "  mc_sf=" << json_mc_sf << std::endl;
+            std::cout << "  [Diff] mc_sf diff = " << TMath::Abs(mc_sf_ - json_mc_sf) << std::endl;
+        } else {
+            std::cout << "  Sample " << sn << " not found in JSON XSec file." << std::endl;
+        }
+        std::cout << "========================================" << std::endl;
+        std::cout << std::endl;
+    }
+
     return;
 }
 

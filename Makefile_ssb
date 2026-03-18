@@ -47,6 +47,8 @@ OBJS = \
     Analysis.o \
     main_ssb.o \
     TextReader.o \
+    JsonConfigReader.o \
+    XSecJsonLoader.o \
     utils.o \
     analysisUtils.o \
     KinematicReconstruction_LSroutines.o \
@@ -62,6 +64,8 @@ OBJS = \
 INPUTS = \
     ./interface/Analysis.h ./src/Analysis.cpp main_ssb.cpp \
     ./TextReader/TextReader.hpp ./TextReader/TextReader.cpp \
+    ./jsonconfig/JsonConfigReader.hpp ./jsonconfig/JsonConfigReader.cpp \
+    ./jsonconfig/XSecJsonLoader.hpp ./jsonconfig/XSecJsonLoader.cpp \
     ./KinSolv/utils.h ./KinSolv/utils.cc \
     ./KinSolv/analysisUtils.h ./KinSolv/analysisUtils.cc \
     ./KinSolv/KinematicReconstruction_LSroutines.h ./KinSolv/KinematicReconstruction_LSroutines.cc \
@@ -89,6 +93,12 @@ CommonTools.o: CommonTools.hpp CommonTools.cpp
 
 TextReader.o: ./TextReader/TextReader.hpp ./TextReader/TextReader.cpp
 	$(CC) $(CXXFLAGS) -c TextReader/TextReader.cpp
+
+JsonConfigReader.o: ./jsonconfig/JsonConfigReader.hpp ./jsonconfig/JsonConfigReader.cpp
+	$(CC) $(CXXFLAGS) -c ./jsonconfig/JsonConfigReader.cpp -o JsonConfigReader.o
+
+XSecJsonLoader.o: ./jsonconfig/XSecJsonLoader.hpp ./jsonconfig/XSecJsonLoader.cpp
+	$(CC) $(CXXFLAGS) -c ./jsonconfig/XSecJsonLoader.cpp -o XSecJsonLoader.o
 
 utils.o: ./KinSolv/utils.h ./KinSolv/utils.cc
 	$(CC) $(CXXFLAGS) -c ./KinSolv/utils.cc

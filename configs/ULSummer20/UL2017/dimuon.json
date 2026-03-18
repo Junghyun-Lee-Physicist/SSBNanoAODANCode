@@ -1,0 +1,44 @@
+{
+  "CenOfEn": "13TeV",
+  "Luminosity": 41479680528.412475586,
+  "RunRange": "2017",
+  "Luminosities": [19648186119.301551819, 16665567224.822570801, 41479680528.412475586, 59832422396.795394897],
+  "Channel": "dimuon",
+  "UsingTotalEvent": "True",
+  "XSecTablesName": "2017.txt",
+
+  "METFilters": ["Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_BadPFMuonDzFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"],
+  "PileUpMCFileName": "UL2017/MC_Pileup.root",
+  "PileUpDATAFileName": "UL2017/Offcial_Data.root",
+
+  "dileptrigger": ["HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v", "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v"],
+  "singleleptrigger": ["HLT_IsoMu27_v"],
+
+  "Muon_ID": "Tight", "MuonPt_cut": 20.0, "MuonEta_cut": 2.4, "MuonIso_type": "PFIsodbeta04", "MuonIso_cut": 0.15,
+  "Elec_ID": "SCBTight", "ElecPt_cut": 20.0, "ElecEta_cut": 2.4, "ElecIso_type": "PFIsoRho03", "ElecIso_cut": 0.0821,
+
+  "Jet_pt": 30.0, "Jet_eta": 2.4, "Jet_ID": "PFTight", "Jet_btag": "deepCSVL", "BTagSFType": "mujets",
+  "PUIDWorkingPoint": "L", "PUIDSFSys": "nom", "ApplyPUID": "true", "PUIDPtThreshold": 50,
+  "MET_cut": 40.0, "METtype": "Puppi", "applyMETXY": "False", "applyRochester": "True",
+
+  "VetoMuonPt": 20.0, "VetoMuonEta": 2.4, "VetoMuonId": "Loose", "VetoMuonIso": "PFIsodbeta04", "VetoMuonIsocut": 0.25,
+  "VetoElecPt": 20.0, "VetoElecEta": 2.5, "VetoElecId": "SCBVeto", "VetoElecIdcut": [0.0, 1.0], "VetoElecIso": "PFIsoRho03", "VetoElecIsocut": 0.175,
+
+  "TrigSFFile": "TriggerSF_2017_ULv2.root",
+  "TrigSFHist": "h2D_SF_mumu_lepABpt_FullError",
+  "DoJER": "true", "PileupSys": "nominal", "L1PreFireSys": "central", "TrigSFSys": "nominal",
+
+  "PUWeightPath": "LUM/2017_UL/puWeights.json.gz",
+  "JERSFPath": "JME/2017_UL/jet_jerc.json.gz", "JECPath": "JME/2017_UL/jet_jerc.json.gz",
+  "JESName": "Summer19UL16_V7_MC_L1L2L3Res_AK4PFchs",
+  "JERPath": "JME/2017_UL/jet_jerc.json.gz", "JMARPath": "JME/2017_UL/jmar.json.gz",
+  "JetVetoPath": "JME/2017_UL/jetvetomaps.json.gz", "JetVetoName": "Summer19UL17_V1",
+  "JetVetoKey": "jetvetomap", "JetVetoType": "jet",
+  "JECName": "Summer19UL17_V5",
+  "JERName": "Summer19UL17_JRV2_MC_ScaleFactor_AK4PFchs",
+  "JERResName": "Summer19UL17_JRV2_MC_PtResolution_AK4PFchs",
+
+  "MuonSFPath": "MUO/2017_UL/muon_Z.json.gz", "MuonIDSFName": "NUM_TightID_DEN_TrackerMuons", "MuonIsoSFName": "NUM_TightRelIso_DEN_TightIDandIPCut",
+  "ElecSFPath": "EGM/2017_UL/electron.json.gz", "ElecIDSFName": "UL-Electron-ID-SF",
+  "LepIDSFSys": "nominal", "LepIsoSFSys": "nominal", "LepRecoSFSys": "nominal", "LepTrackSFSys": "nominal"
+}
